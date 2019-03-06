@@ -1,0 +1,8 @@
+
+数据库链接文件 \App\Common\Conf\db.php
+
+
+后台地址http://你的域名/index.php/Qwadmin
+
+
+默认帐号 admin   密码  www.010xr.com
