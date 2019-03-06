@@ -193,19 +193,24 @@ function dd($var, $echo=true, $label=null, $strict=true) {
         }
     } else {
         ob_start();
-        var_dump($var);
+        print_r($var);
         $output = ob_get_clean();
         if (!extension_loaded('xdebug')) {
             $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
             $output = '<pre>' . $label . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
         }
     }
+    $str='<pre style="display: block;padding: 9.5px;margin: 44px 0 0 0;font-size: 13px;line-height: 1.42857;color: #333;word-break: break-all;word-wrap: break-word;background-color: #F5F5F5;border: 1px solid #CCC;border-radius: 4px;">';
+    $str .= $output;
+    $str.='</pre>';
     if ($echo) {
-        echo($output);die;
+        echo($str);die;
         return null;
     }else
         return $output;die;
 }
+
+
 
 
 
