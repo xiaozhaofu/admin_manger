@@ -85,9 +85,8 @@
                                     <volist name="list" id="val">
                                         <tr>
                                             <td class="center">
-                                                <if condition="$val['uid'] neq 1"><input class="uids" type="checkbox"
-                                                                                         name="uids[]"
-                                                                                         value="{$val['uid']}">
+                                                <if condition="$val['uid'] neq 1">
+                                                    <input class="uids" type="checkbox" name="uids[]" value="{$val['uid']}">
                                                     <else/>
                                                     <span title="系统管理员，禁止删除">--</span></if>
                                             </td>
@@ -98,7 +97,7 @@
                                                     <volist name="group" id="v">
                                                         <option
                                                         <if condition="$val['gid'] eq $v['id']">selected="selected"</if>
-                                                        value="{$v.id}">{$v.title}</option>
+                                                        value="{$v.id}" >{$v.title}</option>
                                                     </volist>
                                                 </select>
                                             </td>
@@ -108,9 +107,9 @@
                                             <td>{$val['qq']}</td>
                                             <td>{$val['email']}</td>
                                             <td class="center"><a href="{:U('edit',array('uid'=>$val['uid']))}">修改</a>&nbsp;
-                                                <if condition="$val['uid'] neq 1"><a class="del" href="javascript:;"
-                                                                                     val="{:U('del',array('uid'=>$val['uid']))}"
-                                                                                     title="删除">删除</a></if>
+                                                <if condition="$val['uid'] neq 1">
+                                                    <a class="del" href="javascript:;" val="{:U('del',array('uid'=>$val['uid']))}" title="删除">删除</a>
+                                                </if>
                                             </td>
                                         </tr>
                                     </volist>

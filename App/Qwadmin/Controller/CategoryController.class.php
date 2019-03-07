@@ -18,8 +18,6 @@ class CategoryController extends ComController
 
     public function index()
     {
-
-
         $category = M('category')->field('id,pid,name,o')->order('o asc')->select();
         $category = $this->getMenu($category);
         $this->assign('category', $category);
@@ -65,7 +63,9 @@ class CategoryController extends ComController
     public function add()
     {
 
-        $pid = isset($_GET['pid']) ? intval($_GET['pid']) : 0;
+        // $pid = isset($_GET['pid']) ? intval($_GET['pid']) : 0;
+        $pid = I('get.pid', 0, 'intval');
+
         $category = M('category')->field('id,pid,name')->order('o asc')->select();
         $tree = new Tree($category);
         $str = "<option value=\$id \$selected>\$spacer\$name</option>"; //生成的形式

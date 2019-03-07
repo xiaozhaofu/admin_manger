@@ -33,15 +33,17 @@ class MemberController extends ComController
         $pagesize = 2;#每页数量
         $offset = $pagesize * ($p - 1);//计算记录偏移量
 
-        $count = $user->join($prefix."auth_group_access on ".$prefix."member.uid =".$prefix.'auth_group_access.uid')
-                ->join($prefix.'auth_group ON '.$prefix.'auth_group.id = '.$prefix.'auth_group_access.group_id')
+        $count = $user->alias('m')
+                ->join($prefix."auth_group_access aa on m.uid = aa.uid")
+                ->join($prefix.'auth_group ag ON ag.id = aa.group_id')
                 ->where($where)
                 ->count();
 
-        $list = $user->field("{$prefix}member.*,{$prefix}auth_group.id as gid,{$prefix}auth_group.title")
+        $list = $user->field("m.*,ag.id as gid,ag.title")
+            ->alias('m')
             ->order($order)
-            ->join("{$prefix}auth_group_access ON {$prefix}member.uid = {$prefix}auth_group_access.uid")
-            ->join("{$prefix}auth_group ON {$prefix}auth_group.id = {$prefix}auth_group_access.group_id")
+            ->join("{$prefix}auth_group_access aa ON m.uid = aa.uid")
+            ->join("{$prefix}auth_group ag ON ag.id = aa.group_id")
             ->where($where)
             ->limit($offset . ',' . $pagesize)
             ->select();
@@ -135,7 +137,7 @@ class MemberController extends ComController
         }
         // $password = isset($_POST['password']) ? trim($_POST['password']) : false;
         $password = I('post.password', '', 'trim');
-
+        // 如果表单中不填写密码, 则不对密码更新
         if ($password) {
             $data['password'] = password($password);
         }
@@ -154,13 +156,14 @@ class MemberController extends ComController
         }
         $data['qq'] = isset($_POST['qq']) ? trim($_POST['qq']) : '';
         // $data['email'] = isset($_POST['email']) ? trim($_POST['email']) : '';
+        //验证邮箱
         $data['email'] = I('post.email', '', 'validate_email');
-
         if (!$data['email']) {
             $this->error('邮箱格式不正确');
         }
 
         $data['t'] = time();
+
         if (!$uid) {
             if ($user == '') {
                 $this->error('用户名称不能为空！');
@@ -173,11 +176,16 @@ class MemberController extends ComController
                 $this->error('用户名已被占用！');
             }
             $data['user'] = $user;
-            $uid = M('member')->add($data);
+
+            $uid = M('member')->data($data)->add();
 
             M('auth_group_access')->data(array('group_id' => $group_id, 'uid' => $uid))->add();
             addlog('新增会员，会员UID：' . $uid);
         } else {
+            $data['uid'] = $uid;
+            // 修改用户信息
+            M('member')->data($data)->save();
+
             M('auth_group_access')->data(array('group_id' => $group_id))->where("uid=$uid")->save();
             addlog('编辑会员信息，会员UID：' . $uid);
 
@@ -231,11 +239,11 @@ class MemberController extends ComController
     private function get_order($order, $prefix)
     {
         if ($order == 'asc') {
-            $order = "{$prefix}member.t asc";
+            $order = "m.t asc";
         } elseif (($order == 'desc')) {
-            $order = "{$prefix}member.t desc";
+            $order = "m.t desc";
         } else {
-            $order = "{$prefix}member.uid asc";
+            $order = "m.uid asc";
         }
         return $order;
     }
