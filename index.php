@@ -21,6 +21,12 @@ define('BIND_MODULE','Qwadmin');//绑定Home模块到当前入口文件，可用
 
 // 定义应用目录
 define('APP_PATH','./App/');
+
+// 定义模板主题
+// define("DEFAULT_THEME","default");
+// 定义模板文件默认目录
+// define("TMPL_PATH","./Template/".DEFAULT_THEME."/");
+
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
 
