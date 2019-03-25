@@ -25,13 +25,13 @@ class MemberController extends ComController
         $prefix = C('DB_PREFIX');
         $order = $this->get_order($order, $prefix);
         if ($keyword <> '') {
-            $where = $this->get_where($field, $prefix, $keyword);
+            $where = $this->get_where($field, $keyword);
         }
 
 
         $user = M('member');
         $pagesize = 2;#每页数量
-        $offset = $pagesize * ($p - 1);//计算记录偏移量
+        // $offset = $pagesize * ($p - 1);//计算记录偏移量
 
         $count = $user->alias('m')
                 ->join($prefix."auth_group_access aa on m.uid = aa.uid")
@@ -45,7 +45,9 @@ class MemberController extends ComController
             ->join("{$prefix}auth_group_access aa ON m.uid = aa.uid")
             ->join("{$prefix}auth_group ag ON ag.id = aa.group_id")
             ->where($where)
-            ->limit($offset . ',' . $pagesize)
+            // ->limit($offset . ',' . $pagesize)
+            //使用page方法进行分页, 不用再计算$offset
+            ->page($p.','.$pagesize)
             ->select();
         //$user->getLastSql();
         $page = new \Think\Page($count, $pagesize);
@@ -211,7 +213,7 @@ class MemberController extends ComController
      * @param $keyword
      * @return string
      */
-    private function get_where($field, $prefix, $keyword)
+    private function get_where($field, $keyword)
     {
         switch ($field){
             case 'user' :
