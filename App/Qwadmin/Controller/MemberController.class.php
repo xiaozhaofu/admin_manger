@@ -215,16 +215,16 @@ class MemberController extends ComController
     {
         switch ($field){
             case 'user' :
-                $where = "{$prefix}member.user LIKE '%$keyword%'";
+                $where = "m.user LIKE '%$keyword%'";
                 break;
             case 'phone' :
-                $where = "{$prefix}member.phone LIKE '%$keyword%'";
+                $where = "m.phone LIKE '%$keyword%'";
                 break;
             case 'qq' :
-                $where = "{$prefix}member.qq LIKE '%$keyword%'";
+                $where = "m.qq LIKE '%$keyword%'";
                 break;
             case 'email' :
-                $where = "{$prefix}member.email LIKE '%$keyword%'";
+                $where = "m.email LIKE '%$keyword%'";
                 break;
         }
 
